@@ -4,9 +4,6 @@ Repositório destinado ao desenvolvimento da atividade **A3 da disciplina de Alg
 
 O projeto ainda está em fase inicial e será desenvolvido ao longo da disciplina.
 
-## Repositório
-
-[A3 - Algoritmos e Programação](https://github.com/Vinicius-de-marco/A3_Algoritmos_e_Programacao.git)
 
 ## Alunos responsáveis pela execução do projeto
 
