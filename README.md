@@ -22,6 +22,7 @@ O projeto ainda está em fase inicial e será desenvolvido ao longo da disciplin
 
 - **Ewelyn Anne Cherem dos Santos**  
   GitHub: [Sunflower964](https://github.com/Sunflower964)
+  RA 10726115550
 
 ## Status do projeto
 
