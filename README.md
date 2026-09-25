@@ -5,27 +5,19 @@ Repositório destinado ao desenvolvimento da atividade **A3 da disciplina de Alg
 O projeto ainda está em fase inicial e será desenvolvido ao longo da disciplina.
 
 
-## Alunos responsáveis pela execução do projeto
+## Alunos Responsáveis pelo Projeto
 
-- **Marcelo Augusto Schmoeller**  
-  GitHub: [marceleroapostas-eng](https://github.com/marceleroapostas-eng)
+| Nome Completo | RA | GitHub |
+| :--- | :--- | :--- |
+| **Marcelo Augusto Schmoeller** | 1072628284 | [marceleroapostas-eng](https://github.com/marceleroapostas-eng) |
+| **Vinicius de Marco Rodrigues** | 1072628879 | [Vinicius-de-marco](https://github.com/Vinicius-de-marco) |
+| **Andriele de Oliveira Antunes** | 1072628818 | [andrieledeoliveira](https://github.com/andrieledeoliveira) |
+| **Ramon Felipe Bento Peruzzo** | 1072621698 | [Rfperuzzo](https://github.com/Rfperuzzo) |
+| **Ewelyn Anne Cherem dos Santos** | 10726115550 | [Sunflower964](https://github.com/Sunflower964) |
 
-- **Vinicius de Marco Rodrigues**  
-  GitHub: [Vinicius-de-marco](https://github.com/Vinicius-de-marco)
 
-- **Andriele de Oliveira Antunes**  
-  GitHub: [andrieledeoliveira](https://github.com/andrieledeoliveira)
+## Status do Projeto
 
-- **Ramon Felipe Bento Peruzzo**  
-  GitHub: [Rfperuzzo](https://github.com/Rfperuzzo)
-  RA 1072621698
-
-- **Ewelyn Anne Cherem dos Santos**  
-  GitHub: [Sunflower964](https://github.com/Sunflower964)
-  RA 10726115550
-
-## Status do projeto
-
-🚧 **Em desenvolvimento**
+**Em desenvolvimento**
 
 Este repositório será atualizado conforme o andamento da atividade A3.
