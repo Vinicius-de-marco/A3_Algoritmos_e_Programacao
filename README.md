@@ -9,7 +9,7 @@ O projeto ainda está em fase inicial e será desenvolvido ao longo da disciplin
 
 | Nome Completo | RA | GitHub |
 | :--- | :--- | :--- |
-| **Marcelo August Schmoeller** | 1072628284 | [marceleroapostas-eng](https://github.com/marceleroapostas-eng) |
+| **Marcelo Augusto Schmoeller** | 1072628284 | [marceleroapostas-eng](https://github.com/marceleroapostas-eng) |
 | **Vinicius de Marco Rodrigues** | 1072628879 | [Vinicius-de-marco](https://github.com/Vinicius-de-marco) |
 | **Andriele de Oliveira Antunes** | 1072628818 | [andrieledeoliveira](https://github.com/andrieledeoliveira) |
 | **Ramon Felipe Bento Peruzzo** | 1072621698 | [Rfperuzzo](https://github.com/Rfperuzzo) |
