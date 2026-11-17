@@ -9,7 +9,7 @@ O projeto ainda está em fase inicial e será desenvolvido ao longo da disciplin
 
 | Nome Completo | RA | GitHub |
 | :--- | :--- | :--- |
-| **Marcelo Augusto Schmoeller** | 1072628284 | [marceleroapostas-eng](https://github.com/marceloschmoeller) |
+| **Marcelo Augusto Schmoeller** | 1072628284 | [marceloschmoeller](https://github.com/marceloschmoeller) |
 | **Vinicius de Marco Rodrigues** | 1072628879 | [Vinicius-de-marco](https://github.com/Vinicius-de-marco) |
 | **Ramon Felipe Bento Peruzzo** | 1072621698 | [Rfperuzzo](https://github.com/Rfperuzzo) |
 | **Ewelyn Anne Cherem dos Santos** | 10726115550 | [Sunflower964](https://github.com/Sunflower964) |
