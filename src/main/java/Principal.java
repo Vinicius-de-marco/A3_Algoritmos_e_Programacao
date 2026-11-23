@@ -281,5 +281,93 @@ public class Main {
             removerConta(conta.getDocumento());
             avisar("Conta excluída.");
         }
-    
-}
+
+    }
+
+    /**
+     * Permite registrar mais de uma baixa, repetindo a pergunta após cada
+     * tentativa.
+     */
+    public static void baixaContas() {
+        do {
+            baixar();
+        } while (confirmar("Deseja realizar outra baixa?"));
+    }
+
+    /**
+     * Localiza a conta, valida o pagamento e só registra a baixa após a
+     * confirmação.
+     */
+    private static void baixar() {
+        Conta conta = localizar();
+        if (conta == null) {
+            return;
+        }
+        if (conta.getSaldo().signum() == 0) {
+            avisar("Esta conta já está quitada.");
+            return;
+        }
+        BigDecimal pagamento;
+        while (true) {
+            pagamento = valor(detalhes(conta) + "\n\nValor do pagamento:");
+            if (pagamento == null) {
+                return;
+            }
+            if (pagamento.compareTo(conta.getSaldo()) <= 0) {
+                break;
+            }
+            avisar("O pagamento não pode superar o saldo devedor.");
+        }
+        if (confirmar("Saldo atual: " + dinheiro(conta.getSaldo())
+                + "\nValor pago: " + dinheiro(pagamento)
+                + "\nSaldo final: " + dinheiro(conta.getSaldo().subtract(pagamento))
+                + "\n\nConfirma baixa?")) {
+            conta.pagar(pagamento);
+            avisar("Pagamento registrado.");
+        }
+    }
+
+    /**
+     * Seleciona o relatório, lê o intervalo de datas e exibe o texto produzido
+     * por
+     */
+    public static void relatorios() {
+        while (true) {
+            String opcao = texto("RELATÓRIOS\n\n1 - Contas a pagar por período\n"
+                    + "2 - Contas vencidas por período\n3 - Balanço de despesas por período\n0 - Retornar");
+            if (opcao == null || opcao.equals("0")) {
+                return;
+            }
+            if (!opcao.equals("1") && !opcao.equals("2") && !opcao.equals("3")) {
+                avisar("Opção inválida.");
+                continue;
+            }
+            LocalDate inicio = data("Data inicial do período:");
+            if (inicio == null) {
+                continue;
+            }
+            LocalDate fim;
+            while (true) {
+                fim = data("Data final do período:");
+                if (fim == null || !fim.isBefore(inicio)) {
+                    break;
+                }
+                avisar("A data final deve ser igual ou posterior à inicial.");
+            }
+            if (fim == null) {
+                continue;
+            }
+            String texto;
+            if (opcao.equals("3")) {
+                texto = balanco(listarContas(), inicio, fim);
+            } else {
+                boolean somenteVencidas = false;
+                if (opcao.equals("2")) {
+                    somenteVencidas = true;
+                }
+                texto = contasPorPeriodo(listarContas(), inicio,
+                        fim, somenteVencidas, LocalDate.now());
+            }
+            exibir("Relatório", texto);
+        }
+    }
