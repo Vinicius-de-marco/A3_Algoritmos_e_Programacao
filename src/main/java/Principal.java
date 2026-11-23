@@ -146,12 +146,15 @@ public class Main {
                 avisar(erro.getMessage());
             }
         }
-    
-}
-/**
-     * Lê os campos e cria uma Conta para a inclusão. Se o usuário cancelar qualquer campo, retorna
-     * null e não inclui nada no vetor.
-     * @param documento identificador já definido; não é solicitado novamente neste método
+
+    }
+
+    /**
+     * Lê os campos e cria uma Conta para a inclusão. Se o usuário cancelar
+     * qualquer campo, retorna null e não inclui nada no vetor.
+     *
+     * @param documento identificador já definido; não é solicitado novamente
+     * neste método
      * @param minimo menor valor original permitido para esta operação
      * @return nova Conta com os dados lidos, ou null caso o usuário cancele
      */
@@ -176,8 +179,9 @@ public class Main {
     }
 
     /**
-     * Pede o valor original até receber uma quantia que não seja menor que o total já pago.
-     * Cancelar abandona a leitura.
+     * Pede o valor original até receber uma quantia que não seja menor que o
+     * total já pago. Cancelar abandona a leitura.
+     *
      * @param minimo menor valor permitido
      * @return valor aceito ou null no cancelamento
      */
@@ -197,7 +201,9 @@ public class Main {
 
     /**
      * Centraliza a pergunta pelo documento e a busca da conta.
-     * @return conta localizada, ou null em cancelamento ou documento inexistente
+     *
+     * @return conta localizada, ou null em cancelamento ou documento
+     * inexistente
      */
     private static Conta localizar() {
         String documento = texto("Número do documento:");
@@ -210,3 +216,70 @@ public class Main {
         }
         return conta;
     }
+
+    /**
+     * Localiza a conta, lê os novos dados em variáveis e monta o resumo.
+     * Somente depois da confirmação chama conta.alterar. Mantém documento e
+     * pagamentos anteriores.
+     */
+    private static void alterar() {
+        Conta conta = localizar();
+        if (conta == null) {
+            return;
+        }
+        exibir("Dados atuais", detalhes(conta));
+
+        String descricao = texto("Descrição:");
+        if (descricao == null) {
+            return;
+        }
+        String beneficiario = texto("Beneficiário:");
+        if (beneficiario == null) {
+            return;
+        }
+        BigDecimal valor = lerValorMinimo(conta.getValorPago());
+        if (valor == null) {
+            return;
+        }
+        LocalDate vencimento = data("Data de vencimento:");
+        if (vencimento == null) {
+            return;
+        }
+
+        BigDecimal novoSaldo = valor.subtract(conta.getValorPago());
+        String resumo = "Documento: " + conta.getDocumento();
+        resumo = resumo + "\nDescrição: " + descricao;
+        resumo = resumo + "\nBeneficiário: " + beneficiario;
+        resumo = resumo + "\nNovo valor: " + dinheiro(valor);
+        resumo = resumo + "\nTotal já pago: " + dinheiro(conta.getValorPago());
+        resumo = resumo + "\nNovo saldo: " + dinheiro(novoSaldo);
+        resumo = resumo + "\nVencimento: " + vencimento.format(
+                java.time.format.DateTimeFormatter.ofPattern("dd/MM/uuuu"));
+
+        if (confirmar(resumo + "\n\nConfirma alteração?")) {
+            conta.alterar(descricao, beneficiario, valor, vencimento);
+            avisar("Conta alterada. O documento e o total pago foram preservados.");
+        }
+    }
+
+    /**
+     * Mostra os dados de uma conta sem modificar seus atributos.
+     */
+    private static void consultar() {
+        Conta conta = localizar();
+        if (conta != null) {
+            exibir("Consulta", detalhes(conta));
+        }
+    }
+
+    /**
+     * Coordena a remoção de uma conta pela interface.
+     */
+    private static void excluir() {
+        Conta conta = localizar();
+        if (conta != null && confirmar(detalhes(conta) + "\n\nConfirma exclusão?")) {
+            removerConta(conta.getDocumento());
+            avisar("Conta excluída.");
+        }
+    
+}
