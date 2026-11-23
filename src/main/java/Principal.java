@@ -371,3 +371,118 @@ public class Main {
             exibir("Relatório", texto);
         }
     }
+
+    /**
+     * Procura uma conta pelo documento e devolve o próprio objeto armazenado,
+     * quando encontrado.
+     *
+     * @param documento identificador a procurar
+     * @return objeto encontrado, ou null quando não houver correspondência
+     */
+    private static Conta buscarConta(String documento) {
+        if (documento == null) {
+            return null;
+        }
+        for (int i = 0; i < quantidade; i++) {
+            if (contas[i].getDocumento().equalsIgnoreCase(documento.trim())) {
+                return contas[i];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Insere uma conta na primeira posição livre do vetor.
+     *
+     * @param conta objeto Conta já construído e validado
+     * @throws IllegalArgumentException se a conta for null, tiver documento
+     * duplicado ou o vetor estiver cheio
+     */
+    private static void guardarConta(Conta conta) {
+        if (conta == null) {
+            throw new IllegalArgumentException("Informe uma conta.");
+        }
+        if (buscarConta(conta.getDocumento()) != null) {
+            throw new IllegalArgumentException("Este documento já está cadastrado.");
+        }
+        if (quantidade == contas.length) {
+            throw new IllegalArgumentException("O cadastro está cheio.");
+        }
+        contas[quantidade] = conta;
+        quantidade++;
+    }
+
+    /**
+     * Remove a conta identificada e reorganiza o vetor para reaproveitar sua
+     * posição.
+     *
+     * @param documento identificador da conta a remover
+     * @throws IllegalArgumentException se o documento não estiver no cadastro
+     */
+    private static void removerConta(String documento) {
+        Conta conta = buscarConta(documento);
+        if (conta == null) {
+            throw new IllegalArgumentException("Documento não encontrado.");
+        }
+        for (int i = 0; i < quantidade; i++) {
+            if (contas[i] == conta) {
+                for (int j = i; j < quantidade - 1; j++) {
+                    contas[j] = contas[j + 1];
+                }
+                quantidade--;
+                contas[quantidade] = null;
+                return;
+            }
+        }
+    }
+
+    /**
+     * Entrega um novo vetor com somente as posições ocupadas do cadastro. O
+     * vetor retornado é novo, mas aponta para os mesmos objetos Conta.
+     * Reordenar a cópia não muda o cadastro.
+     *
+     * @return novo vetor contendo as referências das contas cadastradas
+     */
+    private static Conta[] listarContas() {
+        Conta[] copia = new Conta[quantidade];
+        for (int i = 0; i < quantidade; i++) {
+            copia[i] = contas[i];
+        }
+        return copia;
+    }
+
+    /**
+     * Formatador compartilhado para mostrar datas como dia/mês/ano. Aqui ele
+     * formata datas já existentes; a validação da entrada ocorre em data.
+     */
+    private static final DateTimeFormatter FORMATO_DATA_RELATORIO = DateTimeFormatter.ofPattern("dd/MM/uuuu");
+
+    /**
+     * Converte um número monetário em texto formatado para exibição em reais.
+     *
+     * @param valor número a apresentar; os chamadores do projeto fornecem
+     * valores não nulos
+     * @return representação monetária para exibição, como R$ 500,00
+     */
+    private static String dinheiro(BigDecimal valor) {
+        Locale brasil = new Locale("pt", "BR");
+        NumberFormat formato = NumberFormat.getCurrencyInstance(brasil);
+        return formato.format(valor);
+    }
+
+    /**
+     * Monta o texto de uma única conta usando seus getters.
+     *
+     * @param conta objeto não nulo cujos dados serão apresentados
+     * @return texto com os dados da conta
+     */
+    private static String detalhes(Conta conta) {
+        String texto = "Documento: " + conta.getDocumento();
+        texto = texto + "\nDescrição: " + conta.getDescricao();
+        texto = texto + "\nBeneficiário: " + conta.getBeneficiario();
+        texto = texto + "\nValor original: " + dinheiro(conta.getValor());
+        texto = texto + "\nTotal pago: " + dinheiro(conta.getValorPago());
+        texto = texto + "\nSaldo devedor: " + dinheiro(conta.getSaldo());
+        texto = texto + "\nVencimento: " + conta.getVencimento().format(FORMATO_DATA_RELATORIO);
+        return texto;
+    }
