@@ -486,3 +486,83 @@ public class Main {
         texto = texto + "\nVencimento: " + conta.getVencimento().format(FORMATO_DATA_RELATORIO);
         return texto;
     }
+
+    /**
+     * Gera tanto contas a pagar quanto contas vencidas, de acordo com a opção
+     * recebida.
+     *
+     * @param contas vetor não nulo, sem posições nulas; no programa, vem de
+     * listarContas()
+     * @param inicio primeiro vencimento aceito no intervalo
+     * @param fim último vencimento aceito no intervalo
+     * @param somenteVencidas true aplica o filtro de atraso; false lista todas
+     * as contas em aberto do período
+     * @param hoje data de referência para identificar atraso; fornecida pelo
+     * menu de relatórios
+     * @return relatório pronto como String; a exibição é feita por exibir
+     * @throws IllegalArgumentException se as datas do intervalo forem nulas ou
+     * estiverem invertidas
+     */
+    private static String contasPorPeriodo(Conta[] contas, LocalDate inicio, LocalDate fim,
+            boolean somenteVencidas, LocalDate hoje) {
+        validarPeriodo(inicio, fim);
+
+        Conta[] ordenadas = new Conta[contas.length];
+        for (int i = 0; i < contas.length; i++) {
+            ordenadas[i] = contas[i];
+        }
+
+        for (int i = 0; i < ordenadas.length - 1; i++) {
+            for (int j = i + 1; j < ordenadas.length; j++) {
+                if (ordenadas[i].getVencimento().isAfter(ordenadas[j].getVencimento())) {
+                    Conta auxiliar = ordenadas[i];
+                    ordenadas[i] = ordenadas[j];
+                    ordenadas[j] = auxiliar;
+                }
+            }
+        }
+
+        String titulo = "CONTAS A PAGAR";
+        if (somenteVencidas) {
+            titulo = "CONTAS VENCIDAS";
+        }
+
+        String texto = cabecalho(titulo, inicio, fim);
+        texto = texto + "VENCIMENTO | SALDO | DOCUMENTO | DESCRIÇÃO | BENEFICIÁRIO\n\n";
+        BigDecimal total = BigDecimal.ZERO;
+        int quantidade = 0;
+
+        for (int i = 0; i < ordenadas.length; i++) {
+            Conta conta = ordenadas[i];
+            boolean mostrar = true;
+
+            if (!noPeriodo(conta.getVencimento(), inicio, fim)) {
+                mostrar = false;
+            }
+            if (conta.getSaldo().signum() <= 0) {
+                mostrar = false;
+            }
+            if (mostrar && somenteVencidas) {
+                if (!conta.getVencimento().isBefore(hoje)) {
+                    mostrar = false;
+                }
+            }
+
+            if (mostrar) {
+                texto = texto + conta.getVencimento().format(FORMATO_DATA_RELATORIO) + " | ";
+                texto = texto + dinheiro(conta.getSaldo()) + " | ";
+                texto = texto + conta.getDocumento() + " | ";
+                texto = texto + conta.getDescricao() + " | ";
+                texto = texto + conta.getBeneficiario() + "\n";
+                total = total.add(conta.getSaldo());
+                quantidade++;
+            }
+        }
+
+        if (quantidade == 0) {
+            texto = texto + "Nenhuma conta encontrada.\n";
+        }
+        texto = texto + "\nTotal em aberto: " + dinheiro(total);
+        return texto;
+    
+}
