@@ -25,7 +25,7 @@ import java.util.Locale;
  * operações são métodos desta classe, seguindo a estrutura da main da equipe.
  * Cada conta é um objeto Conta, guardado no vetor abaixo.
  */
-public class Main {
+public class Principal {
 
     // Vetor de até 100 objetos Conta. Os dados existem apenas durante a execução.
     private static Conta[] contas = new Conta[100];
