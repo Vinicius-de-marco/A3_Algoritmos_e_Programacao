@@ -564,5 +564,58 @@ public class Main {
         }
         texto = texto + "\nTotal em aberto: " + dinheiro(total);
         return texto;
+
+    }
+
+    /**
+     * Calcula as despesas de cada mês do período e identifica o beneficiário
+     * com maior soma no mês.
+     *
+     * @param contas vetor não nulo com as contas que ainda existem no cadastro
+     * @param inicio limite inicial de vencimento, inclusive
+     * @param fim limite final de vencimento, inclusive
+     * @return texto do balanço mensal com total do período
+     * @throws IllegalArgumentException se o intervalo estiver ausente ou
+     * invertido
+     */
+    private static String balanco(Conta[] contas, LocalDate inicio, LocalDate fim) {
+        validarPeriodo(inicio, fim);
+        String texto = cabecalho("BALANÇO DE DESPESAS", inicio, fim);
+        texto = texto + "Critério: valor original das contas pelo vencimento.\n";
+        texto = texto + "Maior beneficiário: soma das despesas de cada beneficiário no mês.\n\n";
+        texto = texto + "MÊS/ANO | TOTAL DE DESPESAS | MAIOR BENEFICIÁRIO\n\n";
+
+        BigDecimal totalPeriodo = BigDecimal.ZERO;
+        LocalDate mes = inicio.withDayOfMonth(1);
+        DateTimeFormatter formatoMes = DateTimeFormatter.ofPattern("MM/uuuu");
+
+        while (!mes.isAfter(fim)) {
+            BigDecimal totalMes = BigDecimal.ZERO;
+            BigDecimal maiorValor = BigDecimal.ZERO;
+            String maiorBeneficiario = "Sem despesas";
+
+            for (int i = 0; i < contas.length; i++) {
+                Conta conta = contas[i];
+
+                if (pertenceAoMes(conta, mes, inicio, fim)) {
+                    totalMes = totalMes.add(conta.getValor());
+                    BigDecimal totalBeneficiario = somarBeneficiario(
+                            contas, conta.getBeneficiario(), mes, inicio, fim);
+
+                    if (totalBeneficiario.compareTo(maiorValor) > 0) {
+                        maiorValor = totalBeneficiario;
+                        maiorBeneficiario = conta.getBeneficiario();
+                    }
+                }
+            }
+
+            texto = texto + mes.format(formatoMes) + " | ";
+            texto = texto + dinheiro(totalMes) + " | " + maiorBeneficiario + "\n";
+            totalPeriodo = totalPeriodo.add(totalMes);
+            mes = mes.plusMonths(1);
+        }
+
+        texto = texto + "\nTotal do período: " + dinheiro(totalPeriodo);
+        return texto;
     
 }
