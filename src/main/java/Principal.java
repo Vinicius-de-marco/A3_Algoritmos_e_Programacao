@@ -148,3 +148,65 @@ public class Main {
         }
     
 }
+/**
+     * Lê os campos e cria uma Conta para a inclusão. Se o usuário cancelar qualquer campo, retorna
+     * null e não inclui nada no vetor.
+     * @param documento identificador já definido; não é solicitado novamente neste método
+     * @param minimo menor valor original permitido para esta operação
+     * @return nova Conta com os dados lidos, ou null caso o usuário cancele
+     */
+    private static Conta lerDados(String documento, BigDecimal minimo) {
+        String descricao = texto("Descrição:");
+        if (descricao == null) {
+            return null;
+        }
+        String beneficiario = texto("Beneficiário:");
+        if (beneficiario == null) {
+            return null;
+        }
+        BigDecimal valor = lerValorMinimo(minimo);
+        if (valor == null) {
+            return null;
+        }
+        LocalDate vencimento = data("Data de vencimento:");
+        if (vencimento == null) {
+            return null;
+        }
+        return new Conta(documento, descricao, beneficiario, valor, vencimento);
+    }
+
+    /**
+     * Pede o valor original até receber uma quantia que não seja menor que o total já pago.
+     * Cancelar abandona a leitura.
+     * @param minimo menor valor permitido
+     * @return valor aceito ou null no cancelamento
+     */
+    private static BigDecimal lerValorMinimo(BigDecimal minimo) {
+        while (true) {
+            BigDecimal valor = valor("Valor original da conta:");
+            if (valor == null) {
+                return null;
+            }
+            if (valor.compareTo(minimo) >= 0) {
+                return valor;
+            }
+            avisar("O valor não pode ser menor que o total já pago: "
+                    + dinheiro(minimo));
+        }
+    }
+
+    /**
+     * Centraliza a pergunta pelo documento e a busca da conta.
+     * @return conta localizada, ou null em cancelamento ou documento inexistente
+     */
+    private static Conta localizar() {
+        String documento = texto("Número do documento:");
+        if (documento == null) {
+            return null;
+        }
+        Conta conta = buscarConta(documento);
+        if (conta == null) {
+            avisar("Documento não encontrado.");
+        }
+        return conta;
+    }
