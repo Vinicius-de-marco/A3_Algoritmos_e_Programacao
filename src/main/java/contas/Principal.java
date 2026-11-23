@@ -617,5 +617,5 @@ public class Main {
 
         texto = texto + "\nTotal do período: " + dinheiro(totalPeriodo);
         return texto;
-    
-}
+
+    }
