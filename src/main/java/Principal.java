@@ -1,67 +1,60 @@
 
+package contas;
+
+// JOptionPane cria as caixas de entrada, os avisos e as confirmações do sistema.
 import javax.swing.JOptionPane;
+// JTextArea mostra consultas e relatórios; JScrollPane acrescenta a rolagem.
+import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
+// UIManager permite escrever Sim, Não e Cancelar nos botões.
+import javax.swing.UIManager;
+// BigDecimal calcula valores monetários sem os erros de arredondamento de double.
+import java.math.BigDecimal;
+// LocalDate representa uma data, permite compará-la e avançar de mês.
+import java.time.LocalDate;
+// DateTimeFormatter define o formato; ResolverStyle.STRICT exige datas reais.
+import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
+// DateTimeParseException é o erro tratado quando uma data não existe no calendário.
+import java.time.format.DateTimeParseException;
+// NumberFormat e Locale apresentam os valores no padrão brasileiro, em reais.
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
- * Sistema de Contas a Pagar da XYZ Comércio de Produtos LTDA. Responsável pelo
- * gerenciamento de cadastro, baixa e relatórios de contas.
- *
- * @author Marcelo Augusto Schmoeller
- * @author Nome do Integrante 2
- * @author Nome do Integrante 3
- * @author Nome do Integrante 4
- * @author Nome do Integrante 5
+ * Sistema de Contas a Pagar da XYZ Comércio de Produtos LTDA.
+ * Os menus e as operações são métodos desta classe, seguindo a estrutura da main da equipe.
+ * Cada conta é um objeto Conta, guardado no vetor abaixo.
  */
-public class Principal {
-
+public class Main {
+    // Vetor de até 100 objetos Conta. Os dados existem apenas durante a execução.
+    private static Conta[] contas = new Conta[100];
+    // Quantas posições estão ocupadas, começando pelo índice zero do vetor.
+    private static int quantidade = 0;
     /**
-     * Exibe o menu principal do sistema e direciona o usuário para a
-     * funcionalidade escolhida.
-     * 
-     * @return opcão selecionada pelo usuário.
+     * Mostra as opções do sistema. Os textos são os mesmos da versão dos prints.
+     * @return opção digitada, ou null se o usuário cancelar
      */
     public static String menuPrincipal() {
-
-        return JOptionPane.showInputDialog(
-                "XYZ COMÉRCIO DE PRODUTOS LTDA.\n"
-                + "SISTEMA DE CONTAS A PAGAR\n\n"
-                + "MENU PRINCIPAL\n\n"
-                + "1 - CADASTRO DE CONTAS\n"
-                + "2 - BAIXA DE CONTAS\n"
-                + "3 - RELATÓRIOS\n"
-                + "0 - FINALIZAR\n\n"
-                + "OPÇÃO:");
-
+        return texto("XYZ COMÉRCIO DE PRODUTOS LTDA.\nSISTEMA DE CONTAS A PAGAR\n\n"
+                + "1 - Cadastro de contas\n2 - Baixa de contas\n3 - Relatórios\n0 - Finalizar\n\n"
+                + "Os dados são mantidos apenas durante esta execução.");
     }
 
     /**
-     * Realiza o cadastro de contas a pagar no sistema.
+     * Começa o programa, chama o menu e escolhe a operação com switch.
+     * O do/while repete o menu enquanto a saída não for confirmada.
+     * @param args argumentos de execução; não são utilizados neste trabalho
      */
-    public static void cadastroContas() {
-        JOptionPane.showMessageDialog(null, "Cadastro de Contas (em construção)");
-
-    }
-
-    /**
-     * Realiza a baixa das contas cadastradas no sistema.
-     */
-    public static void baixaContas() {
-        JOptionPane.showMessageDialog(null, "Baixa de Contas (em construção)");
-    }
-
-    /**
-     * Apresenta os relatórios referentes às contas do sistema.
-     */
-    public static void relatorios() {
-        JOptionPane.showMessageDialog(null, "Relatórios (em construção)");
-    }
-
     public static void main(String[] args) {
+        // Deixa em português os botões das janelas de confirmação.
+        UIManager.put("OptionPane.yesButtonText", "Sim");
+        UIManager.put("OptionPane.noButtonText", "Não");
+        UIManager.put("OptionPane.cancelButtonText", "Cancelar");
 
         String opcao;
-
         do {
             opcao = menuPrincipal();
-
             if (opcao == null) {
                 opcao = "0";
             }
@@ -70,22 +63,19 @@ public class Principal {
                 case "1":
                     cadastroContas();
                     break;
-
                 case "2":
                     baixaContas();
                     break;
-
                 case "3":
                     relatorios();
                     break;
-
                 case "0":
-                    JOptionPane.showMessageDialog(null, "Sistema finalizado. Até logo!");
+                    if (!confirmar("Finalizar? Os dados desta execução serão perdidos.")) {
+                        opcao = "";
+                    }
                     break;
                 default:
-                    JOptionPane.showMessageDialog(null, "Opção inválida! Digite 0, 1, 2 ou 3.");
+                    avisar("Opção inválida.");
             }
-
         } while (!opcao.equals("0"));
     }
-}
