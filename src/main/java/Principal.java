@@ -1,4 +1,3 @@
-
 package contas;
 
 // JOptionPane cria as caixas de entrada, os avisos e as confirmações do sistema.
@@ -22,17 +21,21 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
- * Sistema de Contas a Pagar da XYZ Comércio de Produtos LTDA.
- * Os menus e as operações são métodos desta classe, seguindo a estrutura da main da equipe.
+ * Sistema de Contas a Pagar da XYZ Comércio de Produtos LTDA. Os menus e as
+ * operações são métodos desta classe, seguindo a estrutura da main da equipe.
  * Cada conta é um objeto Conta, guardado no vetor abaixo.
  */
 public class Main {
+
     // Vetor de até 100 objetos Conta. Os dados existem apenas durante a execução.
     private static Conta[] contas = new Conta[100];
     // Quantas posições estão ocupadas, começando pelo índice zero do vetor.
     private static int quantidade = 0;
+
     /**
-     * Mostra as opções do sistema. Os textos são os mesmos da versão dos prints.
+     * Mostra as opções do sistema. Os textos são os mesmos da versão dos
+     * prints.
+     *
      * @return opção digitada, ou null se o usuário cancelar
      */
     public static String menuPrincipal() {
@@ -42,8 +45,9 @@ public class Main {
     }
 
     /**
-     * Começa o programa, chama o menu e escolhe a operação com switch.
-     * O do/while repete o menu enquanto a saída não for confirmada.
+     * Começa o programa, chama o menu e escolhe a operação com switch. O
+     * do/while repete o menu enquanto a saída não for confirmada.
+     *
      * @param args argumentos de execução; não são utilizados neste trabalho
      */
     public static void main(String[] args) {
@@ -79,3 +83,68 @@ public class Main {
             }
         } while (!opcao.equals("0"));
     }
+
+    /**
+     * Apresenta o submenu de manutenção das contas.
+     */
+    public static void cadastroContas() {
+        while (true) {
+            String opcao = texto("CADASTRO DE CONTAS\n\n1 - Inclusão\n2 - Alteração\n"
+                    + "3 - Consulta\n4 - Exclusão\n0 - Retornar");
+            if (opcao == null || opcao.equals("0")) {
+                return;
+            }
+            switch (opcao) {
+                case "1":
+                    do {
+                        incluir();
+                    } while (confirmar("Deseja realizar outra inclusão?"));
+                    break;
+                case "2":
+                    do {
+                        alterar();
+                    } while (confirmar("Deseja realizar outra alteração?"));
+                    break;
+                case "3":
+                    do {
+                        consultar();
+                    } while (confirmar("Deseja realizar outra consulta?"));
+                    break;
+                case "4":
+                    do {
+                        excluir();
+                    } while (confirmar("Deseja realizar outra exclusão?"));
+                    break;
+                default:
+                    avisar("Opção inválida.");
+            }
+        }
+    }
+
+    /**
+     * Coordena a inclusão pela interface, desde a leitura do documento até a
+     * mensagem de sucesso.
+     */
+    private static void incluir() {
+        String documento;
+        while (true) {
+            documento = texto("INCLUSÃO\nNúmero do documento:");
+            if (documento == null) {
+                return;
+            }
+            if (buscarConta(documento) == null) {
+                break;
+            }
+            avisar("Documento já cadastrado. Informe outro número.");
+        }
+        Conta nova = lerDados(documento, BigDecimal.ZERO);
+        if (nova != null && confirmar(detalhes(nova) + "\n\nConfirma inclusão?")) {
+            try {
+                guardarConta(nova);
+                avisar("Conta incluída.");
+            } catch (IllegalArgumentException erro) {
+                avisar(erro.getMessage());
+            }
+        }
+    
+}
