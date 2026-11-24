@@ -148,3 +148,48 @@ public class Conta {
             throw new IllegalArgumentException("Use no máximo duas casas decimais.");
         }
     }
+    /**
+     * Getter: devolve o identificador da conta. Exemplo: Uma conta criada com
+     * documento "001" devolve "001". Apenas devolve o atributo; não solicita
+     * dados nem altera a conta.
+     *
+     * @return o identificador da conta
+     */
+    public String getDocumento() {
+        return documento;
+    }
+
+    /**
+     * Getter: devolve a descrição atual da despesa. Exemplo: Depois de alterar
+     * a descrição para "Internet empresarial", este getter devolve esse novo
+     * texto. Apenas devolve o atributo; não solicita dados nem altera a conta.
+     *
+     * @return a descrição atual da despesa
+     */
+    public String getDescricao() {
+        return descricao;
+    }
+
+    /**
+     * Getter: devolve o beneficiário atual da conta. Exemplo: Uma conta de
+     * energia cadastrada para "Fornecedor A" devolve "Fornecedor A". Apenas
+     * devolve o atributo; não solicita dados nem altera a conta.
+     *
+     * @return o beneficiário atual da conta
+     */
+    public String getBeneficiario() {
+        return beneficiario;
+    }
+
+    /**
+     * Getter: devolve o valor original ou o valor redefinido por alterar.
+     * Exemplo: Depois de pagar 150.00 de uma conta de 500.00, getValor()
+     * continua devolvendo 500.00. Apenas devolve o atributo; não solicita dados
+     * nem altera a conta.
+     *
+     * @return o valor original ou o valor redefinido por alterar
+     */
+    public BigDecimal getValor() {
+        return valor;
+    }
+}
