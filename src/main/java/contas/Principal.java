@@ -618,3 +618,90 @@ public class Principal {
         texto = texto + "\nTotal do período: " + dinheiro(totalPeriodo);
         return texto;
     }
+
+    /**
+     * Soma os valores originais das contas de um beneficiário no mês. Também
+     * respeita os limites diários do período e inclui contas quitadas.
+     *
+     * @param contas contas cadastradas
+     * @param beneficiario nome a comparar, sem diferenciar maiúsculas e
+     * minúsculas
+     * @param mes primeiro dia do mês em análise
+     * @param inicio início do período
+     * @param fim fim do período
+     * @return soma das despesas desse beneficiário no mês
+     */
+    private static BigDecimal somarBeneficiario(Conta[] contas, String beneficiario,
+            LocalDate mes, LocalDate inicio, LocalDate fim) {
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (int i = 0; i < contas.length; i++) {
+            Conta conta = contas[i];
+
+            if (pertenceAoMes(conta, mes, inicio, fim)) {
+                if (conta.getBeneficiario().equalsIgnoreCase(beneficiario)) {
+                    total = total.add(conta.getValor());
+                }
+            }
+        }
+        return total;
+    }
+
+    /**
+     * Verifica se uma conta pertence ao mês e às datas exatas selecionadas.
+     *
+     * @param conta conta em análise
+     * @param mes primeiro dia do mês em análise
+     * @param inicio data inicial do intervalo
+     * @param fim data final do intervalo
+     * @return true quando o vencimento satisfaz os dois filtros; false caso
+     * contrário
+     */
+    private static boolean pertenceAoMes(Conta conta, LocalDate mes,
+            LocalDate inicio, LocalDate fim) {
+        LocalDate vencimento = conta.getVencimento();
+
+        if (vencimento.getYear() != mes.getYear()) {
+            return false;
+        }
+        if (vencimento.getMonthValue() != mes.getMonthValue()) {
+            return false;
+        }
+        return noPeriodo(vencimento, inicio, fim);
+    }
+
+    /**
+     * Aplica um intervalo de datas inclusivo.
+     *
+     * @param data vencimento em análise
+     * @param inicio limite inicial, inclusive
+     * @param fim limite final, inclusive
+     * @return true quando a data está entre os limites, incluindo ambos
+     */
+    private static boolean noPeriodo(LocalDate data, LocalDate inicio, LocalDate fim) {
+        if (data.isBefore(inicio)) {
+            return false;
+        }
+        if (data.isAfter(fim)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Impede que os relatórios usem datas ausentes ou um intervalo invertido.
+     *
+     * @param inicio limite inicial do intervalo
+     * @param fim limite final do intervalo
+     * @throws IllegalArgumentException se faltar uma data ou se o fim for
+     * anterior ao início
+     */
+    private static void validarPeriodo(LocalDate inicio, LocalDate fim) {
+        if (inicio == null || fim == null) {
+            throw new IllegalArgumentException("A data final deve ser igual ou posterior à inicial.");
+        }
+        if (fim.isBefore(inicio)) {
+            throw new IllegalArgumentException("A data final deve ser igual ou posterior à inicial.");
+        }
+    }
+}
