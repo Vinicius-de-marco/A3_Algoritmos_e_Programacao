@@ -99,3 +99,52 @@ public class Conta {
         this.valor = valor.setScale(2);
         this.vencimento = vencimento;
     }
+
+    /**
+     * Registra uma nova baixa parcial ou total. Atualiza o acumulado valorPago,
+     * que depois será usado pelo getter getSaldo.
+     *
+     * @param pagamento quantia desta baixa; não representa o total acumulado
+     * @throws IllegalArgumentException se o pagamento for inválido ou
+     * ultrapassar o saldo
+     */
+    public void pagar(BigDecimal pagamento) {
+        validarValor(pagamento);
+        if (pagamento.compareTo(getSaldo()) > 0) {
+            throw new IllegalArgumentException("O pagamento não pode superar o saldo devedor.");
+        }
+        valorPago = valorPago.add(pagamento).setScale(2);
+    }
+
+    /**
+     * Função auxiliar privada e estática que valida e prepara um texto. Não
+     * precisa ler atributos de uma conta para executar.
+     *
+     * @param texto texto recebido de um construtor ou método de alteração
+     * @return texto sem espaços nas extremidades
+     * @throws IllegalArgumentException se o argumento for null, vazio ou
+     * contiver apenas espaços
+     */
+    private static String textoObrigatorio(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            throw new IllegalArgumentException("Preencha todos os campos de texto.");
+        }
+        return texto.trim();
+    }
+
+    /**
+     * Verifica a regra monetária usada tanto pelo valor original quanto pelos
+     * pagamentos.
+     *
+     * @param valor número decimal a validar
+     * @throws IllegalArgumentException se o valor não for positivo ou exceder a
+     * precisão permitida
+     */
+    private static void validarValor(BigDecimal valor) {
+        if (valor == null || valor.signum() <= 0) {
+            throw new IllegalArgumentException("O valor deve ser maior que zero.");
+        }
+        if (valor.stripTrailingZeros().scale() > 2) {
+            throw new IllegalArgumentException("Use no máximo duas casas decimais.");
+        }
+    }
