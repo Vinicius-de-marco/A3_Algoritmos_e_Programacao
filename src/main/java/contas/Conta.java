@@ -69,3 +69,33 @@ public class Conta {
         this.documento = textoObrigatorio(documento);
         alterar(descricao, beneficiario, valor, vencimento);
     }
+
+    /**
+     * Atualiza os dados editáveis de uma conta. Faz o papel de uma alteração
+     * controlada de vários atributos, em vez de oferecer setters independentes.
+     *
+     * @param descricao nova descrição obrigatória
+     * @param beneficiario novo beneficiário obrigatório
+     * @param valor novo valor original, positivo e não inferior ao total já
+     * pago
+     * @param vencimento novo vencimento não nulo
+     * @throws IllegalArgumentException se qualquer dado recebido violar as
+     * regras da conta
+     */
+    public void alterar(String descricao, String beneficiario,
+            BigDecimal valor, LocalDate vencimento) {
+        String novaDescricao = textoObrigatorio(descricao);
+        String novoBeneficiario = textoObrigatorio(beneficiario);
+        validarValor(valor);
+        if (valor.compareTo(valorPago) < 0) {
+            throw new IllegalArgumentException("O valor não pode ser menor que o total já pago.");
+        }
+        if (vencimento == null) {
+            throw new IllegalArgumentException("Informe a data de vencimento.");
+        }
+
+        this.descricao = novaDescricao;
+        this.beneficiario = novoBeneficiario;
+        this.valor = valor.setScale(2);
+        this.vencimento = vencimento;
+    }
