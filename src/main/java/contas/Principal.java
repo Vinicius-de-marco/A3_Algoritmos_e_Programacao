@@ -856,4 +856,74 @@ public class Principal {
         }
         return true;
     }
+
+    /**
+     * Confere os dez caracteres do formato dd/mm/aaaa. Exige barras nas
+     * posições 2 e 5 e algarismos nas outras posições. A existência do dia será
+     * conferida em data.
+     *
+     * @param texto entrada já tratada por texto
+     * @return true se o formato estiver correto
+     */
+    private static boolean formatoDataValido(String texto) {
+        if (texto.length() != 10) {
+            return false;
+        }
+
+        for (int i = 0; i < texto.length(); i++) {
+            char caractere = texto.charAt(i);
+
+            if (i == 2 || i == 5) {
+                if (caractere != '/') {
+                    return false;
+                }
+            } else if (caractere < '0' || caractere > '9') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Faz uma pergunta de Sim ou Não e transforma o resultado num boolean.
+     *
+     * @param mensagem resumo da operação e pergunta de confirmação
+     * @return true para Sim; false para qualquer outra resposta
+     */
+    private static boolean confirmar(String mensagem) {
+        int resposta = JOptionPane.showConfirmDialog(null, mensagem,
+                "Confirmação", JOptionPane.YES_NO_OPTION);
+
+        if (resposta == JOptionPane.YES_OPTION) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Mostra uma mensagem simples de informação ao usuário.
+     *
+     * @param mensagem texto da mensagem, inclusive avisos de validação
+     */
+    private static void avisar(String mensagem) {
+        JOptionPane.showMessageDialog(null, mensagem,
+                "Contas a Pagar", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Apresenta textos maiores, como consultas e relatórios, com uma área de
+     * leitura e barras de rolagem.
+     *
+     * @param titulo título da janela
+     * @param mensagem conteúdo completo da consulta ou do relatório
+     */
+    private static void exibir(String titulo, String mensagem) {
+        JTextArea area = new JTextArea(mensagem, 22, 85);
+        area.setEditable(false);
+        area.setCaretPosition(0);
+
+        JScrollPane rolagem = new JScrollPane(area);
+        JOptionPane.showMessageDialog(null, rolagem, titulo,
+                JOptionPane.INFORMATION_MESSAGE);
+    }
 }
