@@ -148,6 +148,7 @@ public class Conta {
             throw new IllegalArgumentException("Use no máximo duas casas decimais.");
         }
     }
+
     /**
      * Getter: devolve o identificador da conta. Exemplo: Uma conta criada com
      * documento "001" devolve "001". Apenas devolve o atributo; não solicita
@@ -191,5 +192,40 @@ public class Conta {
      */
     public BigDecimal getValor() {
         return valor;
+    }
+
+    /**
+     * Getter: devolve a soma de todos os pagamentos registrados. Exemplo: Após
+     * pagamentos de 150.00 e 50.00, este getter devolve 200.00. Apenas devolve
+     * o atributo; não solicita dados nem altera a conta.
+     *
+     * @return a soma de todos os pagamentos registrados
+     */
+    public BigDecimal getValorPago() {
+        return valorPago;
+    }
+
+    /**
+     * Getter calculado: devolve quanto ainda falta pagar. Diferentemente dos
+     * outros getters, realiza uma subtração a cada chamada. Exemplo: Com valor
+     * 500.00 e valorPago 150.00, getSaldo() devolve 350.00. Com valorPago
+     * 500.00, devolve 0.00. Não existe atributo saldo: o método calcula valor
+     * menos valorPago sem modificar os dados.
+     *
+     * @return saldo devedor atual; zero significa que a conta está quitada
+     */
+    public BigDecimal getSaldo() {
+        return valor.subtract(valorPago);
+    }
+
+    /**
+     * Getter: devolve a data atual de vencimento. Exemplo: Uma conta com
+     * vencimento em 10/11/2026 devolve o LocalDate correspondente a esse dia.
+     * Apenas devolve o atributo; não solicita dados nem altera a conta.
+     *
+     * @return a data atual de vencimento
+     */
+    public LocalDate getVencimento() {
+        return vencimento;
     }
 }
