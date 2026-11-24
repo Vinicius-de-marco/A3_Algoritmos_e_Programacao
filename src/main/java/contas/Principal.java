@@ -704,4 +704,83 @@ public class Principal {
             throw new IllegalArgumentException("A data final deve ser igual ou posterior à inicial.");
         }
     }
+    /**
+     * Monta o cabeçalho por concatenação de textos, com empresa, título, data
+     * de emissão e período.
+     *
+     * @param titulo nome do relatório
+     * @param inicio data inicial já validada
+     * @param fim data final já validada
+     * @return texto inicial do relatório
+     */
+    private static String cabecalho(String titulo, LocalDate inicio, LocalDate fim) {
+        String texto = "XYZ COMÉRCIO DE PRODUTOS LTDA.\nSISTEMA DE CONTAS A PAGAR\n";
+        texto = texto + titulo + "\nEmissão: " + LocalDate.now().format(FORMATO_DATA_RELATORIO);
+        texto = texto + "\nPeríodo: " + inicio.format(FORMATO_DATA_RELATORIO) + " a ";
+        texto = texto + fim.format(FORMATO_DATA_RELATORIO) + "\n\n";
+        return texto;
+    }
+
+    /**
+     * Formatador compartilhado: static pertence à classe e final impede
+     * substituir sua referência. STRICT e o padrão dd/MM/uuuu permitem uma
+     * leitura rigorosa do calendário.
+     */
+    private static final DateTimeFormatter FORMATO_DATA_ENTRADA = DateTimeFormatter
+            .ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
+
+    /**
+     * Solicita um texto obrigatório e distingue cancelamento de preenchimento
+     * vazio.
+     *
+     * @param mensagem pergunta ou instrução exibida ao usuário
+     * @return texto preenchido e tratado, ou null no cancelamento
+     */
+    private static String texto(String mensagem) {
+        while (true) {
+            String resposta = JOptionPane.showInputDialog(null, mensagem,
+                    "Contas a Pagar", JOptionPane.QUESTION_MESSAGE);
+
+            if (resposta == null) {
+                return null;
+            }
+
+            resposta = resposta.trim();
+            if (!resposta.isEmpty()) {
+                return resposta;
+            }
+
+            avisar("O campo não pode ficar vazio.");
+        }
+    }
+
+    /**
+     * Lê um valor positivo, usando formatoValorValido para conferir os
+     * caracteres. Troca vírgula por ponto, converte para BigDecimal e guarda
+     * duas casas decimais.
+     *
+     * @param mensagem instrução sobre o valor que deve ser digitado
+     * @return valor positivo com escala 2, ou null no cancelamento
+     */
+    private static BigDecimal valor(String mensagem) {
+        while (true) {
+            String resposta = texto(mensagem
+                    + "\nExemplo: 1500,50 (sem separador de milhar)");
+
+            if (resposta == null) {
+                return null;
+            }
+
+            if (formatoValorValido(resposta)) {
+                String numero = resposta.replace(',', '.');
+                BigDecimal valor = new BigDecimal(numero).setScale(2);
+
+                if (valor.signum() > 0) {
+                    return valor;
+                }
+            }
+
+            avisar("Informe um valor maior que zero, com no máximo duas casas decimais.");
+        }
+    }
 }
