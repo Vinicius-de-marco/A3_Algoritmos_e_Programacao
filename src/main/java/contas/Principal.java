@@ -704,6 +704,7 @@ public class Principal {
             throw new IllegalArgumentException("A data final deve ser igual ou posterior à inicial.");
         }
     }
+
     /**
      * Monta o cabeçalho por concatenação de textos, com empresa, título, data
      * de emissão e período.
@@ -782,5 +783,77 @@ public class Principal {
 
             avisar("Informe um valor maior que zero, com no máximo duas casas decimais.");
         }
+    }
+
+    /**
+     * Confere o formato com formatoDataValido e lê a data com validação
+     * rigorosa do calendário. Se houver erro, mostra o aviso e tenta novamente.
+     *
+     * @param mensagem instrução sobre a data solicitada
+     * @return data válida, ou null no cancelamento
+     */
+    private static LocalDate data(String mensagem) {
+        while (true) {
+            String resposta = texto(mensagem + "\nFormato: dd/mm/aaaa");
+
+            if (resposta == null) {
+                return null;
+            }
+
+            if (formatoDataValido(resposta)) {
+                try {
+                    LocalDate data = LocalDate.parse(resposta, FORMATO_DATA_ENTRADA);
+                    if (data.getYear() >= 1) {
+                        return data;
+                    }
+                } catch (DateTimeParseException erro) {
+                    // Uma data impossível cai no aviso abaixo e será solicitada novamente.
+                }
+            }
+
+            avisar("Data inválida. Exemplo: 24/11/2026.");
+        }
+    }
+
+    /**
+     * Confere cada caractere do valor: só permite algarismos e um separador
+     * decimal opcional, com uma ou duas casas depois dele. Não verifica se o
+     * valor é maior que zero; valor faz essa verificação.
+     *
+     * @param texto entrada já tratada por texto
+     * @return true para um formato monetário aceito
+     */
+    private static boolean formatoValorValido(String texto) {
+        if (texto.isEmpty()) {
+            return false;
+        }
+
+        boolean encontrouSeparador = false;
+        int casasDecimais = 0;
+
+        for (int i = 0; i < texto.length(); i++) {
+            char caractere = texto.charAt(i);
+
+            if (caractere >= '0' && caractere <= '9') {
+                if (encontrouSeparador) {
+                    casasDecimais++;
+                    if (casasDecimais > 2) {
+                        return false;
+                    }
+                }
+            } else if (caractere == ',' || caractere == '.') {
+                if (i == 0 || encontrouSeparador) {
+                    return false;
+                }
+                encontrouSeparador = true;
+            } else {
+                return false;
+            }
+        }
+
+        if (encontrouSeparador && casasDecimais == 0) {
+            return false;
+        }
+        return true;
     }
 }
